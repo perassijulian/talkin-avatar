@@ -1,9 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
 import Meyda from "meyda";
 
-const AudioUploadPlayer = () => {
+type Props = {
+  onVolumeChange: (vol: number) => void;
+};
+
+export default function AudioUploadPlayer({ onVolumeChange }: Props) {
   // State for volume (RMS) value and uploaded audio source URL
-  const [volume, setVolume] = useState(0);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   // Refs to Web Audio API and Meyda analyzer
@@ -72,7 +75,7 @@ const AudioUploadPlayer = () => {
       bufferSize: 512,
       featureExtractors: ["rms"],
       callback: ({ rms }: { rms: number }) => {
-        setVolume(rms);
+        onVolumeChange(rms);
       },
     });
 
@@ -118,10 +121,9 @@ const AudioUploadPlayer = () => {
         <audio ref={audioRef} src={audioUrl} controls className="mt-4" />
       )}
 
-      {/* Display volume */}
+      {/* Display volume 
       <p className="text-black mt-2">Volume: {volume.toFixed(6)}</p>
+      */}
     </div>
   );
-};
-
-export default AudioUploadPlayer;
+}

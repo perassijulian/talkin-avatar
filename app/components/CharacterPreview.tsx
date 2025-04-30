@@ -1,25 +1,37 @@
+// components/CharacterPreview.tsx
 "use client";
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Eyes from "./Eyes";
+import Mouth from "./Mouth";
 
-const CharacterPreview = () => {
+type Props = {
+  volume: number;
+};
+
+const CharacterPreview = ({ volume }: Props) => {
   const [eyesState, setEyesState] = useState<"open" | "closed">("open");
 
   useEffect(() => {
     const blinkInterval = setInterval(() => {
-      // Cierra los ojos brevemente y vuelve a abrirlos
       setEyesState("closed");
-      setTimeout(() => setEyesState("open"), 150); // cerrar por 150ms
-    }, 3000); // parpadea cada 3 segundos
+      setTimeout(() => setEyesState("open"), 150);
+    }, 3000);
 
     return () => clearInterval(blinkInterval);
   }, []);
 
+  const getMouthState = () => {
+    console.log(volume);
+    if (volume > 0.1) return "wide";
+    if (volume > 0.05) return "medium";
+    if (volume > 0.01) return "small";
+    return "closed";
+  };
+
   return (
     <div className="w-full max-w-md flex justify-center items-center mb-6">
-      {/* Contenedor relativo para superponer imagen y SVG */}
       <div className="relative w-[500px] h-[500px]">
         <Image
           src="/images/avatar-placeholder2.png"
@@ -29,10 +41,16 @@ const CharacterPreview = () => {
           className="rounded-lg shadow-lg object-contain"
         />
 
-        {/* Ojos posicionados sobre la imagen */}
-        {/* MANEJAR POSICION DE OJOS. TO DO: HACER UN COMPONENTE UI PARA POSICIONARLOS */}
+        {/* OJOS */}
+        {/* CONTROLAR POSICION DESDE LA UI */}
         <div className="absolute -rotate-2 -top-35 left-4 w-full h-full flex items-center justify-center pointer-events-none">
           <Eyes state={eyesState} />
+        </div>
+
+        {/* BOCA */}
+        {/* CONTROLAR POSICION DESDE LA UI */}
+        <div className="absolute top-[30%] left-[55%] transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+          <Mouth state={getMouthState()} />
         </div>
       </div>
     </div>

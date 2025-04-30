@@ -6,9 +6,7 @@ import GenerateButton from "./components/GenerateButton";
 import AudioUploadPlayer from "./components/AudioUploadPlayer";
 
 export default function HomePage() {
-  const [audioFile, setAudioFile] = useState<File | null>(null);
   const [volume, setVolume] = useState<number>(0);
-  const [audioURL, setAudioURL] = useState<string | null>(null);
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen p-6 bg-[#f0f4ff]">
@@ -16,9 +14,9 @@ export default function HomePage() {
         Talking Avatar - Crea tu personaje que habla
       </h1>
 
-      <CharacterPreview />
+      <CharacterPreview volume={volume} />
 
-      <AudioUploadPlayer />
+      <AudioUploadPlayer onVolumeChange={(vol) => setVolume(vol)} />
 
       <GenerateButton onClick={() => alert("Generando Avatar...")} />
       {/**<GenerateButton audioFile={audioFile} />**/}
