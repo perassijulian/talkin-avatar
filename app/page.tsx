@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import CharacterPreview from "./components/CharacterPreview";
 import GenerateButton from "./components/GenerateButton";
 import AudioUploadPlayer from "./components/AudioUploadPlayer";
+import MicrophoneInput from "./components/MicrophoneInput";
 
 export default function HomePage() {
   const [volume, setVolume] = useState<number>(0);
@@ -15,6 +16,8 @@ export default function HomePage() {
       </h1>
 
       <CharacterPreview volume={volume} />
+
+      <MicrophoneInput onVolumeChange={(vol) => setVolume(vol)} />
 
       <AudioUploadPlayer onVolumeChange={(vol) => setVolume(vol)} />
 
