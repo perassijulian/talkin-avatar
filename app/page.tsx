@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import CharacterPreview from "./components/CharacterPreview";
-import GenerateButton from "./components/GenerateButton";
 import AudioUploadPlayer from "./components/AudioUploadPlayer";
 import MicrophoneInput from "./components/MicrophoneInput";
 
@@ -17,12 +16,14 @@ export default function HomePage() {
 
       <CharacterPreview volume={volume} />
 
-      <MicrophoneInput onVolumeChange={(vol) => setVolume(vol)} />
-
-      <AudioUploadPlayer onVolumeChange={(vol) => setVolume(vol)} />
-
-      <GenerateButton onClick={() => alert("Generando Avatar...")} />
-      {/**<GenerateButton audioFile={audioFile} />**/}
+      <div className="w-full max-w-md flex gap-4 items-start">
+        <div className="w-3/4 min-h-[110px] flex items-start">
+          <AudioUploadPlayer onVolumeChange={setVolume} />
+        </div>
+        <div className="w-1/4 min-h-[110px] flex items-start">
+          <MicrophoneInput onVolumeChange={setVolume} />
+        </div>
+      </div>
     </main>
   );
 }

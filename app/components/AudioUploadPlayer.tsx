@@ -8,6 +8,7 @@ type Props = {
 export default function AudioUploadPlayer({ onVolumeChange }: Props) {
   // State for volume (RMS) value and uploaded audio source URL
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // Refs to Web Audio API and Meyda analyzer
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -107,23 +108,27 @@ export default function AudioUploadPlayer({ onVolumeChange }: Props) {
   }, [audioUrl]);
 
   return (
-    <div>
-      {/* Upload input */}
+    <div className="flex flex-col items-center w-full">
       <input
-        className="text-black"
         type="file"
         accept="audio/*"
+        ref={inputRef}
         onChange={handleFile}
+        className="hidden"
       />
-
-      {/* Conditionally render audio player only when audioUrl is set */}
-      {audioUrl && (
-        <audio ref={audioRef} src={audioUrl} controls className="mt-4" />
+      {!audioUrl && (
+        <div className="w-full min-h-[56px]">
+          <button
+            onClick={() => inputRef.current?.click()}
+            className="bg-blue-600 text-white w-full px-4 py-2 rounded-md hover:bg-blue-700 transition min-h-[63px]"
+          >
+            Subir Audio
+          </button>
+        </div>
       )}
-
-      {/* Display volume 
-      <p className="text-black mt-2">Volume: {volume.toFixed(6)}</p>
-      */}
+      {audioUrl && (
+        <audio ref={audioRef} src={audioUrl} controls className="w-full" />
+      )}
     </div>
   );
 }

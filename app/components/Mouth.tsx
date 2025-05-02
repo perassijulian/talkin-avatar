@@ -31,7 +31,7 @@ const Mouth: React.FC<MouthProps> = ({ state }) => {
       width={100}
       height={100}
       priority
-      className="pointer-events-none select-none"
+      className="pointer-events-none select-none scale-x-[-1]"
     />
   );
 };

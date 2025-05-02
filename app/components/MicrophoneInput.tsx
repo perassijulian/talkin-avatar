@@ -45,15 +45,15 @@ export default function MicrophoneInput({ onVolumeChange }: Props) {
   };
 
   return (
-    <div className="mt-4">
-      <button
-        onClick={toggleMicrophone}
-        className={`px-4 py-2 text-white rounded ${
-          isListening ? "bg-red-500" : "bg-green-500"
-        }`}
-      >
-        {isListening ? "Detener Micrófono" : "Activar Micrófono"}
-      </button>
-    </div>
+    <button
+      onClick={toggleMicrophone}
+      className={`w-full ${
+        isListening
+          ? "bg-red-600 hover:bg-red-700"
+          : "bg-green-600 hover:bg-green-700"
+      } text-white px-4 py-2 rounded-md transition`}
+    >
+      {isListening ? "Detener Micrófono" : "Usar Micrófono"}
+    </button>
   );
 }
