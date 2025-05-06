@@ -21,37 +21,46 @@ export default function MicrophoneInput({ onVolumeChange }: Props) {
       contextRef.current = null;
       setIsListening(false);
     } else {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const audioContext = new AudioContext();
-      contextRef.current = audioContext;
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        const audioContext = new AudioContext();
+        contextRef.current = audioContext;
 
-      const source = audioContext.createMediaStreamSource(stream);
-      sourceRef.current = source;
+        const source = audioContext.createMediaStreamSource(stream);
+        sourceRef.current = source;
 
-      const analyzer = Meyda.createMeydaAnalyzer({
-        audioContext,
-        source,
-        bufferSize: 512,
-        featureExtractors: ["rms"],
-        callback: ({ rms }: { rms: number }) => {
-          onVolumeChange(rms);
-        },
-      });
+        const analyzer = Meyda.createMeydaAnalyzer({
+          audioContext,
+          source,
+          bufferSize: 512,
+          featureExtractors: ["rms"],
+          callback: ({ rms }: { rms: number }) => {
+            onVolumeChange(rms);
+          },
+        });
 
-      analyzer.start();
-      analyzerRef.current = analyzer;
-      setIsListening(true);
+        analyzer.start();
+        analyzerRef.current = analyzer;
+        setIsListening(true);
+      } catch (error) {
+        console.error("Error accessing microphone:", error);
+        alert(
+          "No se pudo acceder al micrófono. Asegúrate de que esté conectado y permitido."
+        );
+      }
     }
   };
 
   return (
     <button
       onClick={toggleMicrophone}
-      className={`w-full ${
+      className={`w-full text-white px-4 py-3 rounded-xl shadow-md hover:shadow-lg transition font-medium ${
         isListening
           ? "bg-red-600 hover:bg-red-700"
           : "bg-green-600 hover:bg-green-700"
-      } text-white px-4 py-2 rounded-md transition`}
+      }`}
     >
       {isListening ? "Detener Micrófono" : "Usar Micrófono"}
     </button>

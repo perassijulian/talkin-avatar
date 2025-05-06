@@ -1,4 +1,3 @@
-// components/CharacterPreview.tsx
 "use client";
 
 import Image from "next/image";
@@ -11,39 +10,62 @@ type Props = {
 };
 
 const CharacterPreview = ({ volume }: Props) => {
+  const BLINK_INTERVAL = 200;
+  const OPEN_INTERVAL = 2000;
+  const NORMAL_BLINK_THRESHOLD = 4;
+
+  const eyesStateRef = useRef<"open" | "closed" | "side">("open");
   const [eyesState, setEyesState] = useState<"open" | "closed" | "side">(
     "open"
   );
-  const openCounter = useRef(0);
 
   useEffect(() => {
-    const intervalo = setInterval(() => {
-      openCounter.current++;
+    let blinkCount = 0;
+    let timeout: NodeJS.Timeout;
 
-      if (eyesState === "open") {
-        if (openCounter.current >= 5) {
-          // por ejemplo, 5 openCounters abiertos
-          openCounter.current = 0;
-          openCounter.current += 1;
+    const blinkSequence = () => {
+      if (blinkCount < NORMAL_BLINK_THRESHOLD) {
+        // Regular blink
+        eyesStateRef.current = "closed";
+        setEyesState("closed");
 
-          if (openCounter.current >= 4) {
-            openCounter.current = 0;
-            setEyesState("side"); // cada 4 parpadeos, hace "side"
-          } else {
-            setEyesState("closed"); // parpadeo normal
-          }
-        }
+        timeout = setTimeout(() => {
+          eyesStateRef.current = "open";
+          setEyesState("open");
+
+          timeout = setTimeout(() => {
+            blinkCount++;
+            blinkSequence(); // next blink
+          }, OPEN_INTERVAL); // time open
+        }, BLINK_INTERVAL); // time closed
       } else {
-        // Si está closed o side, vuelve rápido a open
-        setEyesState("open");
-      }
-    }, 200); // cada 200ms cambia el eyesState si es necesario
+        // Special blink: closed → side → open
+        eyesStateRef.current = "closed";
+        setEyesState("closed");
 
-    return () => clearInterval(intervalo);
-  }, [eyesState]);
+        timeout = setTimeout(() => {
+          eyesStateRef.current = "side";
+          setEyesState("side");
+
+          timeout = setTimeout(() => {
+            eyesStateRef.current = "open";
+            setEyesState("open");
+
+            blinkCount = 0; // reset
+            timeout = setTimeout(() => {
+              blinkSequence(); // restart full cycle
+            }, OPEN_INTERVAL); // wait while open
+          }, OPEN_INTERVAL); // side duration
+        }, BLINK_INTERVAL); // closed before side
+      }
+    };
+
+    blinkSequence(); // start loop
+
+    return () => clearTimeout(timeout); // cleanup
+  }, []);
 
   const getMouthState = () => {
-    console.log(volume);
     if (volume > 0.1) return "wide";
     if (volume > 0.05) return "medium";
     if (volume > 0.01) return "small";
@@ -51,27 +73,25 @@ const CharacterPreview = ({ volume }: Props) => {
   };
 
   return (
-    <div className="w-full max-w-md flex justify-center items-center mb-6">
-      <div className="relative w-[500px] h-[500px]">
-        <Image
-          src="/images/avatar-placeholder2.png"
-          alt="Vista previa del personaje"
-          fill
-          priority
-          className="rounded-lg shadow-lg object-contain"
-        />
+    <div className="w-full max-w-sm mx-auto aspect-[9/16] relative mb-6">
+      <Image
+        src="/images/avatar-placeholder2.png"
+        alt="Vista previa del personaje"
+        fill
+        priority
+        className="rounded-lg shadow-lg object-cover"
+      />
 
-        {/* OJOS */}
-        {/* CONTROLAR POSICION DESDE LA UI */}
-        <div className="absolute -top-34 left-5 scale-70 w-full h-full flex items-center justify-center pointer-events-none">
-          <Eyes state={eyesState} />
-        </div>
+      {/* OJOS */}
+      {/* CONTROLAR POSICION DESDE LA UI */}
+      <div className="absolute top-[22%] left-[44%] scale-75 -rotate-3 flex items-center justify-center pointer-events-none">
+        <Eyes state={eyesState} />
+      </div>
 
-        {/* BOCA */}
-        {/* CONTROLAR POSICION DESDE LA UI */}
-        <div className="absolute top-[22%] left-[44%] scale-75 -rotate-3 transform pointer-events-none">
-          <Mouth state={getMouthState()} />
-        </div>
+      {/* BOCA */}
+      {/* CONTROLAR POSICION DESDE LA UI */}
+      <div className="absolute top-[22%] left-[44%] scale-75 -rotate-3 transform pointer-events-none">
+        <Mouth state={getMouthState()} />
       </div>
     </div>
   );

@@ -6,6 +6,8 @@ type Props = {
 };
 
 export default function AudioUploadPlayer({ onVolumeChange }: Props) {
+  // Buffer size for Meyda analyzer
+  const BUFFERSIZE = 512;
   // State for volume (RMS) value and uploaded audio source URL
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -73,7 +75,7 @@ export default function AudioUploadPlayer({ onVolumeChange }: Props) {
     const analyzer = Meyda.createMeydaAnalyzer({
       audioContext,
       source,
-      bufferSize: 512,
+      bufferSize: BUFFERSIZE,
       featureExtractors: ["rms"],
       callback: ({ rms }: { rms: number }) => {
         onVolumeChange(rms);
@@ -108,7 +110,7 @@ export default function AudioUploadPlayer({ onVolumeChange }: Props) {
   }, [audioUrl]);
 
   return (
-    <div className="flex flex-col items-center w-full">
+    <div className="w-full max-w-md space-y-4">
       <input
         type="file"
         accept="audio/*"
@@ -116,18 +118,22 @@ export default function AudioUploadPlayer({ onVolumeChange }: Props) {
         onChange={handleFile}
         className="hidden"
       />
-      {!audioUrl && (
-        <div className="w-full min-h-[56px]">
-          <button
-            onClick={() => inputRef.current?.click()}
-            className="bg-blue-600 text-white w-full px-4 py-2 rounded-md hover:bg-blue-700 transition min-h-[63px]"
-          >
-            Subir Audio
-          </button>
+      {!audioUrl ? (
+        <button
+          onClick={() => inputRef.current?.click()}
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 text-white text-base font-medium hover:bg-blue-700 transition-shadow shadow-md hover:shadow-lg"
+        >
+          Subir Audio
+        </button>
+      ) : (
+        <div className="overflow-hidden">
+          <audio
+            ref={audioRef}
+            src={audioUrl}
+            controls
+            className="w-full h-12"
+          />
         </div>
-      )}
-      {audioUrl && (
-        <audio ref={audioRef} src={audioUrl} controls className="w-full" />
       )}
     </div>
   );
