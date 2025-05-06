@@ -7,12 +7,37 @@ import Mouth from "./Mouth";
 
 type Props = {
   volume: number;
+  eyesSettings: {
+    top: number; // percent
+    left: number; // percent
+    scale: number; // 0.1 - 2
+    rotate: number; // -180 to 180
+  };
+  mouthSettings: {
+    top: number; // percent
+    left: number; // percent
+    scale: number; // 0.1 - 2
+    rotate: number; // -180 to 180
+  };
 };
 
-const CharacterPreview = ({ volume }: Props) => {
+const CharacterPreview = ({ volume, eyesSettings, mouthSettings }: Props) => {
   const BLINK_INTERVAL = 200;
   const OPEN_INTERVAL = 2000;
   const NORMAL_BLINK_THRESHOLD = 4;
+
+  const {
+    top: eyesTop,
+    left: eyesLeft,
+    scale: eyesScale,
+    rotate: eyesRotate,
+  } = eyesSettings;
+  const {
+    top: mouthTop,
+    left: mouthLeft,
+    scale: mouthScale,
+    rotate: mouthRotate,
+  } = mouthSettings;
 
   const eyesStateRef = useRef<"open" | "closed" | "side">("open");
   const [eyesState, setEyesState] = useState<"open" | "closed" | "side">(
@@ -84,13 +109,27 @@ const CharacterPreview = ({ volume }: Props) => {
 
       {/* OJOS */}
       {/* CONTROLAR POSICION DESDE LA UI */}
-      <div className="absolute top-[22%] left-[44%] scale-75 -rotate-3 flex items-center justify-center pointer-events-none">
+      <div
+        className="absolute flex items-center justify-center pointer-events-none"
+        style={{
+          top: `${eyesTop}%`,
+          left: `${eyesLeft}%`,
+          transform: `scale(${eyesScale}) rotate(${eyesRotate}deg)`,
+        }}
+      >
         <Eyes state={eyesState} />
       </div>
 
       {/* BOCA */}
       {/* CONTROLAR POSICION DESDE LA UI */}
-      <div className="absolute top-[22%] left-[44%] scale-75 -rotate-3 transform pointer-events-none">
+      <div
+        className="absolute flex items-center justify-center pointer-events-none"
+        style={{
+          top: `${mouthTop}%`,
+          left: `${mouthLeft}%`,
+          transform: `scale(${mouthScale}) rotate(${mouthRotate}deg)`,
+        }}
+      >
         <Mouth state={getMouthState()} />
       </div>
     </div>
