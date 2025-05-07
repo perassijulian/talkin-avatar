@@ -12,12 +12,14 @@ type Props = {
     left: number; // percent
     scale: number; // 0.1 - 2
     rotate: number; // -180 to 180
+    flipX?: boolean; // optional
   };
   mouthSettings: {
     top: number; // percent
     left: number; // percent
     scale: number; // 0.1 - 2
     rotate: number; // -180 to 180
+    flipX?: boolean; // optional
   };
 };
 
@@ -31,12 +33,14 @@ const CharacterPreview = ({ volume, eyesSettings, mouthSettings }: Props) => {
     left: eyesLeft,
     scale: eyesScale,
     rotate: eyesRotate,
+    flipX: eyesFlipX,
   } = eyesSettings;
   const {
     top: mouthTop,
     left: mouthLeft,
     scale: mouthScale,
     rotate: mouthRotate,
+    flipX: mouthFlipX,
   } = mouthSettings;
 
   const eyesStateRef = useRef<"open" | "closed" | "side">("open");
@@ -100,7 +104,7 @@ const CharacterPreview = ({ volume, eyesSettings, mouthSettings }: Props) => {
   return (
     <div className="w-full max-w-sm mx-auto aspect-[9/16] relative mb-6">
       <Image
-        src="/images/avatar-placeholder2.png"
+        src="/images/placeholder.png"
         alt="Vista previa del personaje"
         fill
         priority
@@ -114,7 +118,10 @@ const CharacterPreview = ({ volume, eyesSettings, mouthSettings }: Props) => {
         style={{
           top: `${eyesTop}%`,
           left: `${eyesLeft}%`,
-          transform: `scale(${eyesScale}) rotate(${eyesRotate}deg)`,
+          transform: `
+            scale(${eyesFlipX ? "-" : ""}${eyesScale}, ${eyesScale})
+            rotate(${eyesRotate}deg)
+          `,
         }}
       >
         <Eyes state={eyesState} />
@@ -127,7 +134,10 @@ const CharacterPreview = ({ volume, eyesSettings, mouthSettings }: Props) => {
         style={{
           top: `${mouthTop}%`,
           left: `${mouthLeft}%`,
-          transform: `scale(${mouthScale}) rotate(${mouthRotate}deg)`,
+          transform: `
+            scale(${mouthFlipX ? "-" : ""}${mouthScale}, ${mouthScale})
+            rotate(${mouthRotate}deg)
+          `,
         }}
       >
         <Mouth state={getMouthState()} />
