@@ -2,17 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 import Meyda from "meyda";
+import { Mic, MicOff } from "lucide-react";
 
 type Props = {
   onVolumeChange: (vol: number) => void;
+  mobile?: boolean;
 };
 
-export default function MicrophoneInput({ onVolumeChange }: Props) {
+export default function MicrophoneInput({ onVolumeChange, mobile }: Props) {
   const [isListening, setIsListening] = useState(false);
   const contextRef = useRef<AudioContext | null>(null);
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
   const analyzerRef = useRef<any>(null);
 
+  console.log;
   const toggleMicrophone = async () => {
     if (isListening) {
       analyzerRef.current?.stop();
@@ -62,7 +65,8 @@ export default function MicrophoneInput({ onVolumeChange }: Props) {
           : "bg-green-600 hover:bg-green-700"
       }`}
     >
-      {isListening ? "Detener Micrófono" : "Usar Micrófono"}
+      {!mobile && (isListening ? "Detener Micrófono" : "Usar Micrófono")}
+      {isListening && mobile ? <MicOff /> : <Mic />}
     </button>
   );
 }

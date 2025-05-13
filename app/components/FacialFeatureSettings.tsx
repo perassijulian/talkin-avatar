@@ -1,6 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { JSX, useState } from "react";
+import {
+  MoveHorizontal,
+  RotateCcw,
+  AlignCenterVertical,
+  Expand,
+} from "lucide-react";
 
 type FeatureSettings = {
   top: number; // percent
@@ -33,16 +39,14 @@ export default function FacialFeatureSettings({
   };
 
   const renderSlider = (
-    label: string,
+    icon: JSX.Element,
     key: keyof FeatureSettings,
     min: number,
     max: number,
     step: number = 1
   ) => (
-    <div className="mb-4">
-      <label className="block text-sm font-medium mb-1">
-        {label}: <span className="font-mono">{localSettings[key]}</span>
-      </label>
+    <div className="mb-4 flex gap-2 items-center">
+      <label className="block text-sm font-medium mb-1">{icon}</label>
       <input
         type="range"
         min={min}
@@ -58,25 +62,25 @@ export default function FacialFeatureSettings({
   const renderFlipToggle = () => (
     <div className="mb-4">
       <label className="flex items-center space-x-2 text-sm font-medium">
+        <AlignCenterVertical />
         <input
           type="checkbox"
           checked={!!localSettings.flipX}
           onChange={(e) => updateField("flipX", e.target.checked)}
           className="accent-blue-600"
         />
-        <span>Flip Horizontally</span>
       </label>
     </div>
   );
 
   return (
-    <div className="p-4 rounded-xl shadow-md border bg-white w-full max-w-md mb-4">
-      <h2 className="text-lg font-semibold mb-4">{label} Settings</h2>
+    <div className="p-4 rounded-xl shadow-lg border border-white/10 bg-white/10 backdrop-blur-sm w-full max-w-md mb-4">
+      <h2 className="text-lg font-semibold mb-4">{label}</h2>
 
-      {renderSlider("Top (%)", "top", 0, 100)}
-      {renderSlider("Left (%)", "left", 0, 100)}
-      {renderSlider("Scale", "scale", 0.1, 2, 0.01)}
-      {renderSlider("Rotate (°)", "rotate", -180, 180, 1)}
+      {renderSlider(<MoveHorizontal className="rotate-90" />, "top", 0, 100)}
+      {renderSlider(<MoveHorizontal />, "left", 0, 100)}
+      {renderSlider(<Expand />, "scale", 0.1, 2, 0.01)}
+      {renderSlider(<RotateCcw />, "rotate", -180, 180, 1)}
       {renderFlipToggle()}
     </div>
   );

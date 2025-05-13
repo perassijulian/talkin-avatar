@@ -1,11 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import Meyda from "meyda";
+import { CloudUpload } from "lucide-react";
 
 type Props = {
   onVolumeChange: (vol: number) => void;
+  children?: React.ReactNode;
 };
 
-export default function AudioUploadPlayer({ onVolumeChange }: Props) {
+export default function AudioUploadPlayer({ onVolumeChange, children }: Props) {
   // Buffer size for Meyda analyzer
   const BUFFERSIZE = 512;
   // State for volume (RMS) value and uploaded audio source URL
@@ -123,7 +125,7 @@ export default function AudioUploadPlayer({ onVolumeChange }: Props) {
           onClick={() => inputRef.current?.click()}
           className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 text-white text-base font-medium hover:bg-blue-700 transition-shadow shadow-md hover:shadow-lg"
         >
-          Subir Audio
+          {children ? children : <CloudUpload />}
         </button>
       ) : (
         <div className="overflow-hidden">
