@@ -10,16 +10,16 @@ import { Settings } from "lucide-react";
 export default function HomePage() {
   const [volume, setVolume] = useState<number>(0);
   const [eyesSettings, setEyesSettings] = useState({
-    top: 15,
-    left: 44,
-    scale: 0.86,
+    top: 39,
+    left: 24,
+    scale: 0.95,
     rotate: 0,
   });
   const [mouthSettings, setMouthSettings] = useState({
-    top: 25,
-    left: 47,
-    scale: 0.8,
-    rotate: -8,
+    top: 51,
+    left: 25,
+    scale: 0.75,
+    rotate: 0,
   });
 
   const [showSettings, setShowSettings] = useState(false);

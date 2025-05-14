@@ -119,7 +119,7 @@ const CharacterPreview = ({ volume, eyesSettings, mouthSettings }: Props) => {
           top: `${eyesTop}%`,
           left: `${eyesLeft}%`,
           transform: `
-            scale(${eyesFlipX ? "-" : ""}${eyesScale}, ${eyesScale})
+            scale(${!eyesFlipX ? "-" : ""}${eyesScale}, ${eyesScale})
             rotate(${eyesRotate}deg)
           `,
         }}
@@ -135,7 +135,7 @@ const CharacterPreview = ({ volume, eyesSettings, mouthSettings }: Props) => {
           top: `${mouthTop}%`,
           left: `${mouthLeft}%`,
           transform: `
-            scale(${mouthFlipX ? "-" : ""}${mouthScale}, ${mouthScale})
+            scale(${!mouthFlipX ? "-" : ""}${mouthScale}, ${mouthScale})
             rotate(${mouthRotate}deg)
           `,
         }}
