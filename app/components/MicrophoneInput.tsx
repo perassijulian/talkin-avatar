@@ -15,7 +15,16 @@ export default function MicrophoneInput({ onVolumeChange, mobile }: Props) {
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
   const analyzerRef = useRef<any>(null);
 
-  console.log;
+  // Cleanup function to stop the analyzer and close the audio context
+  useEffect(() => {
+    return () => {
+      if (analyzerRef.current) {
+        analyzerRef.current.stop();
+      }
+      contextRef.current?.close();
+    };
+  }, []);
+
   const toggleMicrophone = async () => {
     if (isListening) {
       analyzerRef.current?.stop();
@@ -65,8 +74,15 @@ export default function MicrophoneInput({ onVolumeChange, mobile }: Props) {
           : "bg-green-600 hover:bg-green-700"
       }`}
     >
-      {!mobile && (isListening ? "Detener Micrófono" : "Usar Micrófono")}
-      {isListening && mobile ? <MicOff /> : <Mic />}
+      {mobile ? (
+        isListening ? (
+          <MicOff />
+        ) : (
+          <Mic />
+        )
+      ) : (
+        <>{isListening ? "Detener Micrófono" : "Usar Micrófono"}</>
+      )}
     </button>
   );
 }
